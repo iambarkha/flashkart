@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse register(RegisterRequest registerRequest) {
-        if (userRepository.existsByEmail(registerRequest.getEmail())) {
+        if(userRepository.existsByEmail(registerRequest.email())) {
             return AuthResponse.builder()
                     .success(false)
                     .message("Email already registered")
@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = userMapper.toUser(registerRequest);
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setPassword(passwordEncoder.encode(registerRequest.password()));
 
         User savedUser = userRepository.save(user);
 
@@ -47,10 +47,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse login(LoginRequest loginRequest) {
-        User user = userRepository.findByEmail(loginRequest.getEmail())
+        User user = userRepository.findByEmail(loginRequest.email())
                 .orElse(null);
 
-        if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (user == null || !passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
             return AuthResponse.builder()
                     .success(false)
                     .message("Invalid email or password")
@@ -80,9 +80,9 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setFirstName(userResponse.getFirstName());
-        user.setLastName(userResponse.getLastName());
-        user.setPhoneNumber(userResponse.getPhoneNumber());
+        user.setFirstName(userResponse.firstName());
+        user.setLastName(userResponse.lastName());
+        user.setPhoneNumber(userResponse.phoneNumber());
 
         User updatedUser = userRepository.save(user);
         return userMapper.toUserResponse(updatedUser);

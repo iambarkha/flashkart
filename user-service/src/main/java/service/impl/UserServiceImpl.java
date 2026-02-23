@@ -37,9 +37,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setFirstName(userResponse.getFirstName());
-        user.setLastName(userResponse.getLastName());
-        user.setPhoneNumber(userResponse.getPhoneNumber());
+        user.setFirstName(userResponse.firstName());
+        user.setLastName(userResponse.lastName());
+        user.setPhoneNumber(userResponse.phoneNumber());
 
         User updatedUser = userRepository.save(user);
         return userMapper.toUserResponse(updatedUser);

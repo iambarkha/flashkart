@@ -2,25 +2,17 @@ package dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class AuthResponse {
-
-    private String accessToken;
-
-    private String tokenType;
-
-    private Long expiresIn;
-
-    private UserResponse user;
-
-    private String message;
-
-    private boolean success;
+public  record AuthResponse(
+        String accessToken,
+        String tokenType,
+        Long expiresIn,
+        UserResponse user,
+        String message,
+        boolean success
+) {
+    @Builder
+    public AuthResponse {
+    }
 }
 
