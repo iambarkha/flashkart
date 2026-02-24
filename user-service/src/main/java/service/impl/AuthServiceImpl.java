@@ -1,5 +1,6 @@
 package service.impl;
 
+import config.JwtService;
 import dto.AuthResponse;
 import dto.LoginRequest;
 import dto.RegisterRequest;
@@ -17,11 +18,13 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -57,10 +60,11 @@ public class AuthServiceImpl implements AuthService {
                     .build();
         }
 
-        // TODO: Generate JWT token here
+        String jwtToken = jwtService.generateToken(user);
+
         return AuthResponse.builder()
                 .user(userMapper.toUserResponse(user))
-                .accessToken("jwt-token-here")
+                .accessToken(jwtToken)
                 .tokenType("Bearer")
                 .expiresIn(86400L) // 24 hours
                 .success(true)
@@ -95,4 +99,3 @@ public class AuthServiceImpl implements AuthService {
         userRepository.delete(user);
     }
 }
-

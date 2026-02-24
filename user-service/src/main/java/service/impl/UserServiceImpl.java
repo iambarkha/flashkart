@@ -26,7 +26,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("isAuthenticated()")
     public UserResponse getUserByEmail(String email) {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!currentUserEmail.equals(email)) {
+            throw new AccessDeniedException("You are not authorized to access this user's data");
+        }
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return userMapper.toUserResponse(user);

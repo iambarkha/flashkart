@@ -18,6 +18,24 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> getAllUsers() {
+        List<UserResponse> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getCurrentUserProfile() {
+        UserResponse user = userService.getCurrentUser();
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateCurrentUserProfile(@Valid @RequestBody UserResponse userResponse) {
+        UserResponse updatedUser = userService.updateCurrentUser(userResponse);
+        return ResponseEntity.ok(updatedUser);
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUserProfile(@PathVariable Long userId) {
         UserResponse user = userService.getUserById(userId);
