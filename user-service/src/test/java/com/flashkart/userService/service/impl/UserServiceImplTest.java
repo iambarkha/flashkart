@@ -5,6 +5,7 @@ import com.flashkart.userService.entity.Role;
 import com.flashkart.userService.repository.UserRepository;
 import com.flashkart.userService.dto.UserResponse;
 import com.flashkart.userService.exception.ResourceNotFoundException;
+import com.flashkart.userService.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,11 +39,14 @@ class UserServiceImplTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserMapper userMapper;
+
     private UserServiceImpl userService;
 
     @BeforeEach
     void setup() {
-        userService = new UserServiceImpl(userRepository, new com.flashkart.userService.mapper.UserMapperImpl());
+        userService = new UserServiceImpl(userRepository, userMapper);
     }
 
     @Test
