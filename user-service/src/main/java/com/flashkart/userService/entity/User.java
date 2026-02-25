@@ -1,16 +1,14 @@
 package com.flashkart.userService.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -37,7 +35,7 @@ public class User {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private Role role;
 
     @Column(nullable = false)
     private boolean active;
@@ -53,7 +51,7 @@ public class User {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         active = true;
-        role = UserRole.USER;
+        role = Role.USER;
     }
 
     @PreUpdate
@@ -61,8 +59,5 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    public enum UserRole {
-        USER, ADMIN, VENDOR
-    }
 }
 

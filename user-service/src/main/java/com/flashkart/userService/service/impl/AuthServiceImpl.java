@@ -1,5 +1,8 @@
 package com.flashkart.userService.service.impl;
 
+import com.flashkart.userService.exception.InvalidCredentialsException;
+import com.flashkart.userService.exception.ResourceNotFoundException;
+import com.flashkart.userService.exception.UserAlreadyExistsException;
 import com.flashkart.userService.service.JwtService;
 import com.flashkart.userService.dto.AuthResponse;
 import com.flashkart.userService.dto.LoginRequest;
@@ -30,12 +33,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse register(RegisterRequest registerRequest) {
         if(userRepository.existsByEmail(registerRequest.email())) {
-            return AuthResponse.builder()
-                    .success(false)
-                    .message("Email already registered")
-                    .build();
+            throw new UserAlreadyExistsException(("Email already registered: " + registerRequest.email()));
         }
-
         User user = userMapper.toUser(registerRequest);
         user.setPassword(passwordEncoder.encode(registerRequest.password()));
 
@@ -54,10 +53,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElse(null);
 
         if (user == null || !passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
-            return AuthResponse.builder()
-                    .success(false)
-                    .message("Invalid email or password")
-                    .build();
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
         String jwtToken = jwtService.generateToken(user);
@@ -95,7 +91,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userid: " + userId));
         userRepository.delete(user);
     }
 }

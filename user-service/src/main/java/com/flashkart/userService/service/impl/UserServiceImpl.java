@@ -2,8 +2,9 @@ package com.flashkart.userService.service.impl;
 
 import com.flashkart.userService.dto.UserResponse;
 import com.flashkart.userService.entity.User;
+import com.flashkart.userService.exception.AccessDeniedException;
+import com.flashkart.userService.exception.ResourceNotFoundException;
 import com.flashkart.userService.mapper.UserMapper;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + userId));
         return userMapper.toUserResponse(user);
     }
 
@@ -39,14 +40,14 @@ public class UserServiceImpl implements UserService {
             throw new AccessDeniedException("You are not authorized to access this user's data");
         }
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
         return userMapper.toUserResponse(user);
     }
 
     @Override
     public UserResponse updateUser(Long userId, UserResponse userResponse) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + userId));
 
         user.setFirstName(userResponse.firstName());
         user.setLastName(userResponse.lastName());
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + userId));
         userRepository.delete(user);
     }
 
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
         return userMapper.toUserResponse(user);
     }
 
@@ -88,7 +89,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse updateCurrentUser(UserResponse userResponse) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
         user.setFirstName(userResponse.firstName());
         user.setLastName(userResponse.lastName());
