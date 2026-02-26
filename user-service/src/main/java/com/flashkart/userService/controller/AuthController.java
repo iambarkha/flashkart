@@ -3,6 +3,12 @@ package com.flashkart.userService.controller;
 import com.flashkart.userService.dto.AuthResponse;
 import com.flashkart.userService.dto.LoginRequest;
 import com.flashkart.userService.dto.RegisterRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @RestController
 @RequestMapping("/api/v1/auth")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Authentication", description = "User authentication endpoints")
 public class AuthController {
 
     private final AuthService authService;
@@ -30,6 +37,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register a new user", description = "Create a new user account with email and password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User registered successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input or email already exists")
+    })
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         AuthResponse response = authService.register(registerRequest);
         return ResponseEntity.status(response.success() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST)
@@ -37,6 +50,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "User login", description = "Authenticate user and return JWT token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login successful",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials")
+    })
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         AuthResponse response = authService.login(loginRequest);
         return ResponseEntity.status(response.success() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
@@ -44,10 +63,15 @@ public class AuthController {
     }
 
     @GetMapping("/validate")
+    @Operation(summary = "Validate JWT token", description = "Check if a JWT token is valid")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Token is valid"),
+            @ApiResponse(responseCode = "401", description = "Invalid or expired token")
+    })
     public ResponseEntity<String> validate(@RequestParam String token) {
-        String username = jwtService.extractUsername(token); // Extract username from token
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username); // Fetch UserDetails
-        boolean isValid = jwtService.isTokenValid(token, userDetails); // Validate token with UserDetails
+        String username = jwtService.extractUsername(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        boolean isValid = jwtService.isTokenValid(token, userDetails);
 
         if (isValid) {
             return ResponseEntity.ok("Token is valid");
