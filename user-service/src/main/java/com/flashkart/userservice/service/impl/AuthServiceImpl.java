@@ -1,5 +1,6 @@
 package com.flashkart.userservice.service.impl;
 
+import com.flashkart.userservice.entity.Role;
 import com.flashkart.userservice.exception.InvalidCredentialsException;
 import com.flashkart.userservice.exception.ResourceNotFoundException;
 import com.flashkart.userservice.exception.UserAlreadyExistsException;
@@ -36,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
             throw new UserAlreadyExistsException(("Email already registered: " + registerRequest.email()));
         }
         User user = userMapper.toUser(registerRequest);
+        user.setRole(Role.CUSTOMER);
         user.setPassword(passwordEncoder.encode(registerRequest.password()));
 
         User savedUser = userRepository.save(user);

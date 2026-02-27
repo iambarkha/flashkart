@@ -58,13 +58,13 @@ class UserServiceImplTest {
                 .password("password")
                 .phoneNumber("1234567890")
                 .role(Role.CUSTOMER)
-                .active(true)
+                .enabled(true)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
         user = userRepository.save(user);
 
-        UserResponse response = userService.getUserById(user.getUserId());
+        UserResponse response = userService.getUserById(user.getId());
         assertEquals("John", response.firstName());
         assertEquals("Doe", response.lastName());
         assertEquals("john@example.com", response.email());
