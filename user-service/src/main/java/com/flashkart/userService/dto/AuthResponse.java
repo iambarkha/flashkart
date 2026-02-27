@@ -1,7 +1,5 @@
 package com.flashkart.userService.dto;
 
-import lombok.Builder;
-
 public  record AuthResponse(
         String accessToken,
         String tokenType,
@@ -10,8 +8,5 @@ public  record AuthResponse(
         String message,
         boolean success
 ) {
-    @Builder
-    public AuthResponse {
-    }
 }
 
