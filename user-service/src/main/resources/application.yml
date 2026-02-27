@@ -41,7 +41,7 @@ logging:
     org.springframework.web: DEBUG
 
 jwt:
-  secret: your-very-secret-key
+  secret: ${JWT_SECRET}
   expiration: 3600000 # 1 hour in milliseconds
 
 
