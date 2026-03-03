@@ -5,7 +5,7 @@ import com.flashkart.userservice.entity.Role;
 import java.util.UUID;
 
 public record UserResponse(
-        UUID userId,
+        UUID id,
         String firstName,
         String lastName,
         String email,
