@@ -1,5 +1,6 @@
 package com.flashkart.userservice.repository;
 
+import com.flashkart.userservice.entity.Role;
 import com.flashkart.userservice.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,34 +14,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> , JpaSpecificationExecutor<User> {
+public interface UserRepository extends JpaRepository<User, UUID> , JpaSpecificationExecutor<User> {
 
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
 
-    Optional<User> findByPhoneNumber(String phoneNumber);
-
-    // JPQL: case-insensitive partial name search among enabled users
-    @Query("select u from User u where lower(concat(u.firstName, ' ', u.lastName)) like lower(concat('%', :name, '%')) and u.active = true")
-    List<User> searchActiveByName(@Param("name") String name);
-
-    // Native SQL: when you need DB-specific functions or exact column names
-    @Query(value = "SELECT * FROM users u WHERE u.phone_number = :phone", nativeQuery = true)
-    Optional<User> findByPhoneNative(@Param("phone") String phone);
-
     // Modifying query: update without loading entity
     @Modifying
     @Transactional
-    @Query("update User u set u.active = false where u.id = :id")
-    int deactivateById(@Param("id") Long id);
+    @Query("update User u set u.enabled = false where u.id = :id")
+    int deactivateById(@Param("id") UUID id);
 
-    /*// DTO constructor projection (requires matching constructor in dto.UserSummary)
-    @Query("select new dto.UserSummary(u.id, concat(u.firstName, ' ', u.lastName)) from User u where u.enabled = true")
-    List<dto.UserSummary> findActiveUserSummaries();
-*/
     // Pageable example (derived + pagination)
-    Page<User> findByRole(String role, Pageable pageable);
+    Page<User> findByRole(Role role, Pageable pageable);
 }
