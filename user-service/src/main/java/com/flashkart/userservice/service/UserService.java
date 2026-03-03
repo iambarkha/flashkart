@@ -1,6 +1,6 @@
 package com.flashkart.userservice.service;
 
-import com.flashkart.userservice.dto.UserResponse;
+import com.flashkart.userservice.dto.response.UserResponse;
 
 import java.util.List;
 

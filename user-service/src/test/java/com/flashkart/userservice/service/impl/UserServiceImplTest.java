@@ -3,7 +3,7 @@ package com.flashkart.userservice.service.impl;
 import com.flashkart.userservice.entity.User;
 import com.flashkart.userservice.entity.Role;
 import com.flashkart.userservice.repository.UserRepository;
-import com.flashkart.userservice.dto.UserResponse;
+import com.flashkart.userservice.dto.response.UserResponse;
 import com.flashkart.userservice.exception.ResourceNotFoundException;
 import com.flashkart.userservice.mapper.UserMapper;
 import org.junit.jupiter.api.Test;

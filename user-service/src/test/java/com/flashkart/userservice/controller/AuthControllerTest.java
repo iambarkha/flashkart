@@ -12,8 +12,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flashkart.userservice.dto.RegisterRequest;
-import com.flashkart.userservice.dto.LoginRequest;
+import com.flashkart.userservice.dto.request.RegisterRequest;
+import com.flashkart.userservice.dto.request.LoginRequest;
 
 @SpringBootTest
 @Testcontainers

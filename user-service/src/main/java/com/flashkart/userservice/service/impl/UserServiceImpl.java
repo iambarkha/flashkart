@@ -1,6 +1,6 @@
 package com.flashkart.userservice.service.impl;
 
-import com.flashkart.userservice.dto.UserResponse;
+import com.flashkart.userservice.dto.response.UserResponse;
 import com.flashkart.userservice.entity.User;
 import com.flashkart.userservice.exception.AccessDeniedException;
 import com.flashkart.userservice.exception.ResourceNotFoundException;

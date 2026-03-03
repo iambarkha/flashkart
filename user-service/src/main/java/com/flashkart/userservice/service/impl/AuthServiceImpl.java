@@ -1,14 +1,15 @@
 package com.flashkart.userservice.service.impl;
 
+import com.flashkart.userservice.dto.request.LoginRequest;
+import com.flashkart.userservice.dto.request.RegisterRequest;
+import com.flashkart.userservice.dto.response.ApiResponse;
+import com.flashkart.userservice.dto.response.AuthResponse;
+import com.flashkart.userservice.dto.response.UserResponse;
 import com.flashkart.userservice.entity.Role;
 import com.flashkart.userservice.exception.InvalidCredentialsException;
 import com.flashkart.userservice.exception.ResourceNotFoundException;
 import com.flashkart.userservice.exception.UserAlreadyExistsException;
 import com.flashkart.userservice.service.JwtService;
-import com.flashkart.userservice.dto.AuthResponse;
-import com.flashkart.userservice.dto.LoginRequest;
-import com.flashkart.userservice.dto.RegisterRequest;
-import com.flashkart.userservice.dto.UserResponse;
 import com.flashkart.userservice.entity.User;
 import com.flashkart.userservice.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse register(RegisterRequest registerRequest) {
+    public ApiResponse<AuthResponse> register(RegisterRequest registerRequest) {
         if(userRepository.existsByEmail(registerRequest.email())) {
             throw new UserAlreadyExistsException(("Email already registered: " + registerRequest.email()));
         }
@@ -42,32 +43,28 @@ public class AuthServiceImpl implements AuthService {
 
         User savedUser = userRepository.save(user);
 
-        return AuthResponse.builder()
-                .user(userMapper.toUserResponse(savedUser))
-                .success(true)
-                .message("User registered successfully")
-                .build();
+       AuthResponse response =  new AuthResponse( jwtService.generateToken(savedUser),
+               "Bearer", 86400L, userMapper.toUserResponse(savedUser));
+
+        return ApiResponse.success("User registered successfully", response);
     }
 
     @Override
-    public AuthResponse login(LoginRequest loginRequest) {
+    public ApiResponse<AuthResponse> login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.email())
                 .orElse(null);
 
         if (user == null || !passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password");
         }
+        AuthResponse authResponse = new AuthResponse(
+                jwtService.generateToken(user),
+                "Bearer",
+                86400L,
+                userMapper.toUserResponse(user)
+        );
+        return ApiResponse.success("User registered successfully", authResponse);
 
-        String jwtToken = jwtService.generateToken(user);
-
-        return AuthResponse.builder()
-                .user(userMapper.toUserResponse(user))
-                .accessToken(jwtToken)
-                .tokenType("Bearer")
-                .expiresIn(86400L) // 24 hours
-                .success(true)
-                .message("Login successful")
-                .build();
     }
 
     @Override

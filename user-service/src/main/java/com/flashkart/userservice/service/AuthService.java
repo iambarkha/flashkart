@@ -1,15 +1,16 @@
 package com.flashkart.userservice.service;
 
-import com.flashkart.userservice.dto.AuthResponse;
-import com.flashkart.userservice.dto.LoginRequest;
-import com.flashkart.userservice.dto.RegisterRequest;
-import com.flashkart.userservice.dto.UserResponse;
+import com.flashkart.userservice.dto.request.LoginRequest;
+import com.flashkart.userservice.dto.request.RegisterRequest;
+import com.flashkart.userservice.dto.response.ApiResponse;
+import com.flashkart.userservice.dto.response.AuthResponse;
+import com.flashkart.userservice.dto.response.UserResponse;
 
 public interface AuthService {
 
-    AuthResponse register(RegisterRequest registerRequest);
+    ApiResponse<AuthResponse> register(RegisterRequest registerRequest);
 
-    AuthResponse login(LoginRequest loginRequest);
+    ApiResponse<AuthResponse> login(LoginRequest loginRequest);
 
     UserResponse getUserProfile(Long userId);
 

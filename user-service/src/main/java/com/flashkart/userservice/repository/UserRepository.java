@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> , JpaSpecifica
 
     Optional<User> findByPhoneNumber(String phoneNumber);
 
-    // JPQL: case-insensitive partial name search among active users
+    // JPQL: case-insensitive partial name search among enabled users
     @Query("select u from User u where lower(concat(u.firstName, ' ', u.lastName)) like lower(concat('%', :name, '%')) and u.active = true")
     List<User> searchActiveByName(@Param("name") String name);
 
@@ -38,7 +38,7 @@ public interface UserRepository extends JpaRepository<User, Long> , JpaSpecifica
     int deactivateById(@Param("id") Long id);
 
     /*// DTO constructor projection (requires matching constructor in dto.UserSummary)
-    @Query("select new dto.UserSummary(u.id, concat(u.firstName, ' ', u.lastName)) from User u where u.active = true")
+    @Query("select new dto.UserSummary(u.id, concat(u.firstName, ' ', u.lastName)) from User u where u.enabled = true")
     List<dto.UserSummary> findActiveUserSummaries();
 */
     // Pageable example (derived + pagination)
