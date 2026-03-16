@@ -2,9 +2,9 @@ package com.flashkart.userservice.service.impl;
 
 import com.flashkart.userservice.dto.response.UserResponse;
 import com.flashkart.userservice.entity.User;
-import com.flashkart.userservice.exception.AccessDeniedException;
 import com.flashkart.userservice.exception.ResourceNotFoundException;
 import com.flashkart.userservice.mapper.UserMapper;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -12,6 +12,7 @@ import com.flashkart.userservice.repository.UserRepository;
 import com.flashkart.userservice.service.UserService;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +27,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUserById(Long userId) {
+    public UserResponse getUserById(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         return userMapper.toUserResponse(user);
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(Long userId, UserResponse userResponse) {
+    public UserResponse updateUser(UUID userId, UserResponse userResponse) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
+    public void deleteUser(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         userRepository.delete(user);

@@ -3,16 +3,17 @@ package com.flashkart.userservice.service;
 import com.flashkart.userservice.dto.response.UserResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
 
-    UserResponse getUserById(Long userId);
+    UserResponse getUserById(UUID userId);
 
     UserResponse getUserByEmail(String email);
 
-    UserResponse updateUser(Long userId, UserResponse userResponse);
+    UserResponse updateUser(UUID userId, UserResponse userResponse);
 
-    void deleteUser(Long userId);
+    void deleteUser(UUID userId);
 
     boolean existsByEmail(String email);
 

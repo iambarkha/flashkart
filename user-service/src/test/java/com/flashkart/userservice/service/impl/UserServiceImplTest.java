@@ -17,6 +17,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,6 +73,7 @@ class UserServiceImplTest {
 
     @Test
     void getUserById_throwsResourceNotFoundException_whenUserDoesNotExist() {
-        assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(999L));
+        UUID id = UUID.randomUUID();
+        assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(id));
     }
 }

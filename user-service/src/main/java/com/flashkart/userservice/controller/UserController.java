@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
+import java.util.UUID;
+
 import com.flashkart.userservice.service.UserService;
 
 @RestController
@@ -71,7 +73,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "401", description = "Unauthorized - JWT token required")
     })
-    public ResponseEntity<UserResponse> getUserProfile(@PathVariable Long userId) {
+    public ResponseEntity<UserResponse> getUserProfile(@PathVariable UUID userId) {
         UserResponse user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
@@ -97,7 +99,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "401", description = "Unauthorized - JWT token required")
     })
-    public ResponseEntity<UserResponse> updateUserProfile(@PathVariable Long userId,
+    public ResponseEntity<UserResponse> updateUserProfile(@PathVariable UUID userId,
                                                            @Valid @RequestBody UserResponse userResponse) {
         UserResponse updatedUser = userService.updateUser(userId, userResponse);
         return ResponseEntity.ok(updatedUser);
@@ -111,7 +113,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "401", description = "Unauthorized - JWT token required")
     })
-    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<String> deleteUser(@PathVariable UUID userId) {
         userService.deleteUser(userId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User deleted successfully");
     }
