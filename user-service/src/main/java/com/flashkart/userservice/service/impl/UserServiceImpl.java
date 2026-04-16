@@ -4,12 +4,12 @@ import com.flashkart.userservice.dto.response.UserResponse;
 import com.flashkart.userservice.entity.User;
 import com.flashkart.userservice.exception.ResourceNotFoundException;
 import com.flashkart.userservice.mapper.UserMapper;
+import com.flashkart.userservice.repository.UserRepository;
+import com.flashkart.userservice.service.UserService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.flashkart.userservice.repository.UserRepository;
-import com.flashkart.userservice.service.UserService;
 
 import java.util.List;
 import java.util.UUID;
@@ -46,13 +46,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(UUID userId, UserResponse userResponse) {
+    public UserResponse updateUser(UUID userId, UpdateUserRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
-        user.setFirstName(userResponse.firstName());
-        user.setLastName(userResponse.lastName());
-        user.setPhoneNumber(userResponse.phoneNumber());
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setPhoneNumber(request.phoneNumber());
 
         User updatedUser = userRepository.save(user);
         return userMapper.toUserResponse(updatedUser);
@@ -87,14 +87,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateCurrentUser(UserResponse userResponse) {
+    public UserResponse updateCurrentUser(UpdateUserRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
-        user.setFirstName(userResponse.firstName());
-        user.setLastName(userResponse.lastName());
-        user.setPhoneNumber(userResponse.phoneNumber());
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setPhoneNumber(request.phoneNumber());
 
         User updatedUser = userRepository.save(user);
         return userMapper.toUserResponse(updatedUser);

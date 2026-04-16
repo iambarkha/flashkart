@@ -11,7 +11,7 @@ public interface UserService {
 
     UserResponse getUserByEmail(String email);
 
-    UserResponse updateUser(UUID userId, UserResponse userResponse);
+    UserResponse updateUser(UUID userId, UpdateUserRequest request);
 
     void deleteUser(UUID userId);
 
@@ -22,5 +22,12 @@ public interface UserService {
 
     UserResponse getCurrentUser();
 
-    UserResponse updateCurrentUser(UserResponse userResponse);
+    UserResponse updateCurrentUser(UpdateUserRequest request);
+
+
+    public record UpdateUserRequest(
+            String firstName,
+            String lastName,
+            String phoneNumber
+    ) {}
 }

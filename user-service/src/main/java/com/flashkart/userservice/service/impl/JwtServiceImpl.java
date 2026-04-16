@@ -83,4 +83,8 @@ public class JwtServiceImpl implements JwtService {
                 .getPayload();
     }
 
+    @Override
+    public long getExpirationMs() {
+        return jwtExpiration;
     }
+}
